@@ -1,4 +1,4 @@
-import { IsBoolean, IsDecimal, IsInt, IsOptional, IsString } from "class-validator";
+import { IsBoolean, IsInt, IsNumber, IsOptional, IsString } from "class-validator";
 
 export class CreateCompanyDto {
     @IsString()
@@ -13,10 +13,10 @@ export class CreateCompanyDto {
     @IsString()
     address: string;
     
-    @IsDecimal()
+    @IsNumber({ maxDecimalPlaces: 2 })
     assets: number;
     
-    @IsDecimal()
+    @IsNumber({ maxDecimalPlaces: 2 })
     liabilities: number;
     
     @IsInt()
