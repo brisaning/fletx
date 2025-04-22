@@ -22,11 +22,11 @@ export class LocationsService {
   }
 
   async findAll() {
-    return await this.locationRepository.find(); 
+    return await this.locationRepository.findBy({isActive: true}); 
   }
 
   async findOne(id: number) {
-    return await this.locationRepository.findOneBy({ id });
+    return await this.locationRepository.findOneBy({ id, isActive: true });
   }
 
   async update(id: number, updateLocationDto: UpdateLocationDto) {

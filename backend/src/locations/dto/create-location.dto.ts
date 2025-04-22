@@ -7,8 +7,4 @@ export class CreateLocationDto {
     @IsBoolean()
     @IsOptional()
     isActive?: boolean;
-
-    @IsBoolean()
-    @IsOptional()
-    isDeleted?: boolean;
 }
