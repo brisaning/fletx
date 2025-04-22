@@ -1,26 +1,53 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateLocationDto } from './dto/create-location.dto';
 import { UpdateLocationDto } from './dto/update-location.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Location } from './entities/location.entity';
 
 @Injectable()
 export class LocationsService {
-  create(createLocationDto: CreateLocationDto) {
-    return 'This action adds a new location';
+
+  constructor(
+    @InjectRepository(Location) private readonly locationRepository: Repository<Location>
+  ) {}
+
+  async create(createLocationDto: CreateLocationDto) {
+    try {
+      const newLocation = await this.locationRepository.create(createLocationDto);
+      return await this.locationRepository.save(newLocation);
+    } catch (error) {
+      throw new BadRequestException('Error creating location: ' + error.message); 
+      }
   }
 
-  findAll() {
-    return `This action returns all locations`;
+  async findAll() {
+    return await this.locationRepository.find(); 
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} location`;
+  async findOne(id: number) {
+    return await this.locationRepository.findOneBy({ id });
   }
 
-  update(id: number, updateLocationDto: UpdateLocationDto) {
-    return `This action updates a #${id} location`;
+  async update(id: number, updateLocationDto: UpdateLocationDto) {
+    try {
+      return await this.locationRepository.update(id, updateLocationDto);
+    } catch (error) {
+      throw new BadRequestException('Error updating location: ' + error.message);      
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} location`;
+  async remove(id: number) {
+    try {
+      const location = await this.locationRepository.findOneBy({ id });
+      if(!location) {
+        throw new BadRequestException('Location not found');
+      }
+      location.isActive = false;
+      await this.update(id, location);
+      return await this.locationRepository.softRemove(location);
+    } catch (error) {
+      throw new BadRequestException('Error deleting location: ' + error.message);
+    }
   }
 }
