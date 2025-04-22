@@ -9,8 +9,8 @@ import { CitiesService } from 'src/cities/cities.service';
 import { ProductsService } from 'src/products/products.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Company]), CitiesModule, ProductsModule],
+  imports: [TypeOrmModule.forFeature([Company]), CitiesModule],
   controllers: [CompaniesController],
-  providers: [CompaniesService, CitiesService, ProductsService],
+  providers: [CompaniesService, CitiesService],
 })
 export class CompaniesModule {}

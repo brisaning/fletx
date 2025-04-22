@@ -1,5 +1,5 @@
 import { Company } from "src/companies/entities/company.entity";
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, DeleteDateColumn, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Product {
@@ -14,6 +14,18 @@ export class Product {
     
     @Column('decimal', { precision: 10, scale: 2 })
     price: number;
+    
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    createdAt: Date;
+    
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    updatedAt: Date;
+    
+    @DeleteDateColumn()
+    deletedAt: Date | null;
+    
+    @Column({ type: 'boolean', default: true })
+    isActive: boolean;
     
     @ManyToMany(() => Company, company => company.products)
     companies: Company[];
