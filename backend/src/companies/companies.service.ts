@@ -20,7 +20,7 @@ export class CompaniesService {
     try {
       const city = await this.citiesService.findOne(createCompanyDto.cityId);
       if (!city) {
-        throw new BadRequestException('City not found');
+        throw new NotFoundException('City not found');
       }
       
       const newCompany = this.companyRepository.create(createCompanyDto);
@@ -45,7 +45,7 @@ export class CompaniesService {
       if(updateCompanyDto.cityId) {
         const city = await this.citiesService.findOne(updateCompanyDto.cityId);
         if (!city) {
-          throw new BadRequestException('City not found');
+          throw new NotFoundException('City not found');
         }
         delete updateCompanyDto.cityId;
         return  await this.companyRepository.update(id, {...updateCompanyDto, city});
@@ -61,7 +61,7 @@ export class CompaniesService {
     try {
       const company = await this.findOne(id);
       if(!company) {
-        throw new BadRequestException('Company not found');
+        throw new NotFoundException('Company not found');
       }
       company.isActive = false;
       await this.update(id, company);
