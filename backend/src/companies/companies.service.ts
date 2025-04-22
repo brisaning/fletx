@@ -1,18 +1,19 @@
-import { BadRequestException, Injectable, Optional } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, Optional } from '@nestjs/common';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Company } from './entities/company.entity';
 import { Repository } from 'typeorm';
 import { CitiesService } from 'src/cities/cities.service';
+import { Product } from 'src/products/entities/product.entity';
 
 @Injectable()
 export class CompaniesService {
   
   constructor(
     @InjectRepository(Company) private readonly companyRepository: Repository<Company>,
+    @InjectRepository(Product) private readonly productRepository: Repository<Product>,
     @Optional() private readonly citiesService: CitiesService,
-    // private readonly productsService: ProductsService,
   ) {}
   
   async create(createCompanyDto: CreateCompanyDto) {
@@ -69,4 +70,67 @@ export class CompaniesService {
       throw new BadRequestException('Error deleting company: ' + error.message);       
     }
   }
+
+  async addProductsToCompany(companyId: number, productIds: number[]): Promise<Company> {
+    const company = await this.companyRepository.findOne({
+      where: { id: companyId },
+      relations: ['products'],
+    });
+
+    if (!company) {
+      throw new NotFoundException(`Company with ID ${companyId} not found`);
+    }
+
+    const products = await this.productRepository.findByIds(productIds);
+    if (products.length !== productIds.length) {
+      const foundIds = products.map(p => p.id);
+      const missingIds = productIds.filter(id => !foundIds.includes(id));
+      throw new NotFoundException(`Products with IDs ${missingIds.join(', ')} not found`);
+    }
+
+    // Fusiona los productos existentes con los nuevos (evita duplicados)
+    company.products = [...new Set([...company.products, ...products])];
+    
+    return this.companyRepository.save(company);
+  }
+
+  // Método para remover productos de una compañía
+  async removeProductsFromCompany(companyId: number, productIds: number[]): Promise<Company> {
+    const company = await this.companyRepository.findOne({
+      where: { id: companyId },
+      relations: ['products'],
+    });
+
+    if (!company) {
+      throw new NotFoundException(`Company with ID ${companyId} not found`);
+    }
+
+    company.products = company.products.filter(
+      product => !productIds.includes(product.id)
+    );
+
+    return this.companyRepository.save(company);
+  }
+
+  // Método para reemplazar todos los productos de una compañía
+  async setCompanyProducts(companyId: number, productIds: number[]): Promise<Company> {
+    const company = await this.companyRepository.findOne({
+      where: { id: companyId }
+    });
+
+    if (!company) {
+      throw new NotFoundException(`Company with ID ${companyId} not found`);
+    }
+
+    const products = await this.productRepository.findByIds(productIds);
+    if (products.length !== productIds.length) {
+      const foundIds = products.map(p => p.id);
+      const missingIds = productIds.filter(id => !foundIds.includes(id));
+      throw new NotFoundException(`Products with IDs ${missingIds.join(', ')} not found`);
+    }
+
+    company.products = products;
+    return this.companyRepository.save(company);
+  }
+
 }
