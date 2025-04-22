@@ -1,26 +1,50 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Optional } from '@nestjs/common';
 import { CreateCityDto } from './dto/create-city.dto';
 import { UpdateCityDto } from './dto/update-city.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { City } from './entities/city.entity';
+import { Repository } from 'typeorm';
+import { LocationsService } from 'src/locations/locations.service';
 
 @Injectable()
 export class CitiesService {
-  create(createCityDto: CreateCityDto) {
-    return 'This action adds a new city';
+
+  constructor(
+    @InjectRepository(City) private readonly cityRepository: Repository<City>,
+    @Optional() private readonly locationsService: LocationsService,
+  ) {}
+
+  async create(createCityDto: CreateCityDto) {
+    try {
+      const location = await this.locationsService.findOne(createCityDto.locationId);
+      if (!location) {
+        throw new BadRequestException('Location not found');
+      }
+
+      const newCity = await this.cityRepository.create(createCityDto);
+      return await this.cityRepository.save({...newCity, location});
+    } catch (error) {
+      throw new BadRequestException('Error creating city: ' + error.message);
+    }
   }
 
-  findAll() {
-    return `This action returns all cities`;
+  async findAll() {
+    return await this.cityRepository.findBy({ isActive: true });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} city`;
+  async findOne(id: number) {
+    return await this.cityRepository.findOneBy({ id, isActive: true });
   }
 
-  update(id: number, updateCityDto: UpdateCityDto) {
-    return `This action updates a #${id} city`;
+  async update(id: number, updateCityDto: UpdateCityDto) {
+    try {
+      return await this.cityRepository.update(id, updateCityDto);      
+    } catch (error) {
+      throw new BadRequestException('Error updating city: ' + error.message);      
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} city`;
+  async remove(id: number) {
+    return await this.cityRepository.softDelete(id);
   }
 }
