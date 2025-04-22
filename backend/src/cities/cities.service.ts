@@ -38,7 +38,14 @@ export class CitiesService {
 
   async update(id: number, updateCityDto: UpdateCityDto) {
     try {
-      return await this.cityRepository.update(id, updateCityDto);      
+      if(updateCityDto.locationId) {
+        const location = await this.locationsService.findOne(updateCityDto.locationId);
+        if (!location) {
+          throw new BadRequestException('Location not found');
+        }
+        return await this.cityRepository.update(id, {...updateCityDto, location});
+      }
+      return await this.cityRepository.update(id, updateCityDto);
     } catch (error) {
       throw new BadRequestException('Error updating city: ' + error.message);      
     }
