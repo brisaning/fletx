@@ -43,6 +43,7 @@ export class CitiesService {
         if (!location) {
           throw new BadRequestException('Location not found');
         }
+        delete updateCityDto.locationId;
         return await this.cityRepository.update(id, {...updateCityDto, location});
       }
       return await this.cityRepository.update(id, updateCityDto);

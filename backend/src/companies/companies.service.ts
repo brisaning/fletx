@@ -46,6 +46,7 @@ export class CompaniesService {
         if (!city) {
           throw new BadRequestException('City not found');
         }
+        delete updateCompanyDto.cityId;
         return  await this.companyRepository.update(id, {...updateCompanyDto, city});
       }
       
