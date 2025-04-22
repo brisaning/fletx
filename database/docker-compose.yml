@@ -1,0 +1,28 @@
+services:
+  postgresql:
+    image: ${POSTGRESQL_IMAGE}
+    container_name: ${POSTGRESQL_CONTAINER_NAME}
+    environment:
+      - POSTGRESQL_DATABASE=${POSTGRESQL_DATABASE}
+      - POSTGRESQL_USERNAME=${POSTGRESQL_USERNAME}
+      - POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}
+    volumes:
+      - fletx_data:/bitnami/postgresql:rw
+    ports:
+      - ${POSTGRESQL_PORTS}
+    networks:
+      - fletx_network
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${POSTGRESQL_USERNAME}"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  fletx_data:
+    driver: local
+
+networks:
+  fletx_network:
+    driver: bridge
