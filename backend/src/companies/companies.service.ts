@@ -1,26 +1,37 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Optional } from '@nestjs/common';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Company } from './entities/company.entity';
+import { Repository } from 'typeorm';
+import { CitiesService } from 'src/cities/cities.service';
 
 @Injectable()
 export class CompaniesService {
-  create(createCompanyDto: CreateCompanyDto) {
-    return 'This action adds a new company';
+
+  constructor(
+    @InjectRepository(Company) private readonly companyRepository: Repository<Company>,
+    @Optional() private readonly citiesService: CitiesService,
+    // private readonly productsService: ProductsService,
+  ) {}
+
+  async create(createCompanyDto: CreateCompanyDto) {
+    return await this.companyRepository.save(createCompanyDto);
   }
 
-  findAll() {
-    return `This action returns all companies`;
+  async findAll() {
+    return await this.companyRepository.findBy({ isActive: true }); //this will return all companies
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} company`;
+  async findOne(id: number) {
+    return await this.companyRepository.findOneBy({id, isActive: true });
   }
 
-  update(id: number, updateCompanyDto: UpdateCompanyDto) {
-    return `This action updates a #${id} company`;
+  async update(id: number, updateCompanyDto: UpdateCompanyDto) {
+    return await this.companyRepository.update(id, updateCompanyDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} company`;
+  async remove(id: number) {
+    return await this.companyRepository.softDelete(id);
   }
 }

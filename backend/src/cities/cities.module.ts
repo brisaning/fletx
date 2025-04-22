@@ -10,5 +10,6 @@ import { LocationsService } from 'src/locations/locations.service';
   imports: [TypeOrmModule.forFeature([City]), LocationsModule],
   controllers: [CitiesController],
   providers: [CitiesService, LocationsService],
+  exports: [TypeOrmModule],
 })
 export class CitiesModule {}
