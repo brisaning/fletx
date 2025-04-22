@@ -5,6 +5,7 @@ import { UsersModule } from './users/users.module';
 import { LocationsModule } from './locations/locations.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CitiesModule } from './cities/cities.module';
 
 @Module({
   imports: [
@@ -26,7 +27,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     CompaniesModule,
     ProductsModule,
     UsersModule,
-    LocationsModule
+    LocationsModule,
+    CitiesModule
   ],
   controllers: [],
   providers: [],
