@@ -45,6 +45,16 @@ export class CitiesService {
   }
 
   async remove(id: number) {
-    return await this.cityRepository.softDelete(id);
+    try {
+      const city = await this.findOne(id);
+      if (!city) {
+        throw new BadRequestException('City not found');
+      }
+      city.isActive = false;
+      await this.update(id, city);
+      return await this.cityRepository.softRemove(city);
+    } catch (error) {
+      throw new BadRequestException('Error deleting city: ' + error.message); 
+    }
   }
 }

@@ -39,7 +39,7 @@ export class LocationsService {
 
   async remove(id: number) {
     try {
-      const location = await this.locationRepository.findOneBy({ id });
+      const location = await this.findOne(id);
       if(!location) {
         throw new BadRequestException('Location not found');
       }
