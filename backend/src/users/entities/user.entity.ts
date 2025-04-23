@@ -1,5 +1,5 @@
 import { Company } from "src/companies/entities/company.entity";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, DeleteDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class User {
@@ -29,6 +29,18 @@ export class User {
     
     @Column({ default: 'user' })
     role: string;
+    
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    createdAt: Date;
+    
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    updatedAt: Date;
+    
+    @DeleteDateColumn()
+    deletedAt: Date | null;
+    
+    @Column({ type: 'boolean', default: true })
+    isActive: boolean;
     
     @ManyToOne(() => Company, company => company.users)
     company: Company;

@@ -6,6 +6,7 @@ import { LocationsModule } from './locations/locations.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CitiesModule } from './cities/cities.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -28,7 +29,8 @@ import { CitiesModule } from './cities/cities.module';
     ProductsModule,
     UsersModule,
     LocationsModule,
-    CitiesModule
+    CitiesModule,
+    AuthModule
   ],
   controllers: [],
   providers: [],
