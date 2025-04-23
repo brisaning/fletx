@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -18,7 +18,6 @@ export class UsersService {
       const newUser = this.userRepository.create(createUserDto);
       return await this.userRepository.save(newUser);
     } catch (error) {
-      console.error(error);
       throw new BadRequestException('Error creating user: ' + error.message);      
     }
   }
@@ -36,10 +35,18 @@ export class UsersService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
-    return await this.userRepository.update(id, updateUserDto);
+    try {
+      return await this.userRepository.update(id, updateUserDto);      
+    } catch (error) {
+      throw new BadRequestException('Error updating user: ' + error.message);
+    }
   }
 
   async remove(id: number) {
-    return await this.userRepository.softDelete(id);
+    try {
+      return await this.userRepository.softDelete(id);      
+    } catch (error) {
+      throw new BadRequestException('Error deleting user: ' + error.message);     
+    }
   }
 }
