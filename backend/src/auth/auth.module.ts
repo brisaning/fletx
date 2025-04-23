@@ -5,9 +5,8 @@ import { UsersModule } from 'src/users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './strategies/jwt.strategy';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { RolesGuard } from './guards/roles.guard';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { AuthGuardsModule } from './auth-guards.module';
 
 @Module({
   imports: [
@@ -24,17 +23,15 @@ import { ThrottlerModule } from '@nestjs/throttler';
       }),
       inject: [ConfigService],
     }),
+    AuthGuardsModule,
   ],
   controllers: [AuthController],
   providers: [
     AuthService,
-    JwtStrategy,
-    JwtAuthGuard,
-    RolesGuard,],
-    exports: [
-      JwtAuthGuard,
-      RolesGuard,
-      AuthService,
-    ],
+    JwtStrategy
+  ],
+  exports: [
+    AuthService,
+  ],
 })
 export class AuthModule {}
