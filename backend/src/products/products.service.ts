@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -41,7 +41,7 @@ export class ProductsService {
     try {
       const product = await this.findOne(id);
       if (!product) {
-        throw new BadRequestException('Product not found');
+        throw new NotFoundException('Product not found');
       }
       product.isActive = false;
       await this.update(id, product);

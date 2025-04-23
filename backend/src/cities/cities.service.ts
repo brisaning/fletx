@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, Optional } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, Optional } from '@nestjs/common';
 import { CreateCityDto } from './dto/create-city.dto';
 import { UpdateCityDto } from './dto/update-city.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -18,7 +18,7 @@ export class CitiesService {
     try {
       const location = await this.locationsService.findOne(createCityDto.locationId);
       if (!location) {
-        throw new BadRequestException('Location not found');
+        throw new NotFoundException('Location not found');
       }
 
       const newCity = await this.cityRepository.create(createCityDto);
@@ -41,7 +41,7 @@ export class CitiesService {
       if(updateCityDto.locationId) {
         const location = await this.locationsService.findOne(updateCityDto.locationId);
         if (!location) {
-          throw new BadRequestException('Location not found');
+          throw new NotFoundException('Location not found');
         }
         delete updateCityDto.locationId;
         return await this.cityRepository.update(id, {...updateCityDto, location});
@@ -56,7 +56,7 @@ export class CitiesService {
     try {
       const city = await this.findOne(id);
       if (!city) {
-        throw new BadRequestException('City not found');
+        throw new NotFoundException('City not found');
       }
       city.isActive = false;
       await this.update(id, city);

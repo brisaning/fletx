@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateLocationDto } from './dto/create-location.dto';
 import { UpdateLocationDto } from './dto/update-location.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -41,7 +41,7 @@ export class LocationsService {
     try {
       const location = await this.findOne(id);
       if(!location) {
-        throw new BadRequestException('Location not found');
+        throw new NotFoundException('Location not found');
       }
       location.isActive = false;
       await this.update(id, location);
