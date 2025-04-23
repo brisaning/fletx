@@ -7,9 +7,10 @@ import { CitiesModule } from 'src/cities/cities.module';
 import { ProductsModule } from 'src/products/products.module';
 import { CitiesService } from 'src/cities/cities.service';
 import { ProductsService } from 'src/products/products.service';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Company]), CitiesModule, ProductsModule],
+  imports: [TypeOrmModule.forFeature([Company]), CitiesModule, ProductsModule, AuthModule],
   controllers: [CompaniesController],
   providers: [CompaniesService, CitiesService],
 })
