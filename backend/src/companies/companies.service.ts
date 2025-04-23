@@ -35,6 +35,49 @@ export class CompaniesService {
   async findAll() {
     return await this.companyRepository.findBy({ isActive: true }); //this will return all companies
   }
+
+  async findCompanyProducts(companyId: number): Promise<Product[]> {
+    const company = await this.companyRepository.findOne({
+      where: { id: companyId },
+      relations: ['products'], // Esto carga la relación con productos
+    });
+
+    if (!company) {
+      throw new NotFoundException(`Company with ID ${companyId} not found`);
+    }
+
+    return company.products;
+  }
+
+  /*async findCompanyProductsPaginated(
+    companyId: number,
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<{ products: Product[]; total: number }> {
+    const result = await this.companyRepository
+      .createQueryBuilder('company')
+      .where('company.id = :companyId', { companyId })
+      .leftJoinAndSelect('company.products', 'product')
+      .take(limit)
+      .skip((page - 1) * limit)
+      .getOne();
+  
+    if (!result) {
+      throw new NotFoundException(`Company with ID ${companyId} not found`);
+    }
+  
+    // Consulta separada para el total (más precisa)
+    const total = await this.productRepository
+      .createQueryBuilder('product')
+      .innerJoin('product.companies', 'company')
+      .where('company.id = :companyId', { companyId })
+      .getCount();
+  
+    return {
+      products: result.products || [],
+      total,
+    };
+  }*/
   
   async findOne(id: number) {
     return await this.companyRepository.findOneBy({id, isActive: true });

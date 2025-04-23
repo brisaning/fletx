@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseArrayPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseArrayPipe, Query } from '@nestjs/common';
 import { CompaniesService } from './companies.service';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
+import { Product } from 'src/products/entities/product.entity';
 
 @Controller('companies')
 export class CompaniesController {
@@ -16,6 +17,27 @@ export class CompaniesController {
   findAll() {
     return this.companiesService.findAll();
   }
+
+  @Get(':id/products')
+  async getCompanyProducts(
+    @Param('id') companyId: number,
+  ): Promise<Product[]> {
+    return this.companiesService.findCompanyProducts(companyId);
+  }
+
+  // Versión con paginación
+  /*@Get(':id/products/paginated')
+  async getCompanyProductsPaginated(
+    @Param('id') companyId: number,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+  ): Promise<{ products: Product[]; total: number }> {
+    return this.companiesService.findCompanyProductsPaginated(
+      companyId,
+      page,
+      limit,
+    );
+  }*/
 
   @Get(':id')
   findOne(@Param('id') id: string) {
