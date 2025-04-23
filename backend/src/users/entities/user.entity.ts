@@ -1,5 +1,5 @@
 import { Company } from "src/companies/entities/company.entity";
-import { Column, DeleteDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, DeleteDateColumn, Entity, Index, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class User {
@@ -21,7 +21,8 @@ export class User {
     @Column()
     phone: string;
     
-    @Column({ unique: true })
+    @Column()
+    @Index({ unique: true })
     email: string;
     
     @Column()
