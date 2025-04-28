@@ -8,11 +8,12 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { AuthGuardsModule } from './auth-guards.module';
 import { PassportModule } from '@nestjs/passport';
+import { LocalStrategy } from './strategies/local.strategy';
 
 @Module({
   imports: [
+    PassportModule.register({ defaultStrategy: 'local' }),
     UsersModule,
-    PassportModule,
     ThrottlerModule.forRoot([{
       ttl: 60, // Límite de 100 requests por minuto
       limit: 100,
@@ -30,7 +31,8 @@ import { PassportModule } from '@nestjs/passport';
   controllers: [AuthController],
   providers: [
     AuthService,
-    JwtStrategy
+    JwtStrategy,
+    LocalStrategy
   ],
   exports: [
     AuthService,
