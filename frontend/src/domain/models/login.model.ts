@@ -1,4 +1,6 @@
+import { UserModel } from "./userModel";
+
 export interface LoginModel {
-    username: string;
-    password: string;
+    accessToken: string;
+    user: UserModel;
 }

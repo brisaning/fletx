@@ -2,7 +2,7 @@ import { Observable } from "rxjs";
 import { LoginModel } from "../models/login.model";
 
 export abstract class LoginRepository {
-    abstract login(username: string, password: string) : Observable<LoginModel>;
+    abstract login(params: any) : Observable<LoginModel>;
     abstract logout(): Observable<void>;
     abstract isAuthenticated(params: any): Observable<boolean>;
 }

@@ -8,20 +8,20 @@
                 <div class="card-body">
                     <h5 class="card-title">Inicie sesión para continuar</h5>
                     <div class="card-form">
-                        <form>
+                        <form [formGroup]="loginForm">
                             <div class="mb-3">
                                 <label for="email" class="form-label">Coreo Electrónico</label>
-                                <input type="email" class="form-control" id="email" aria-describedby="emailHelp">
+                                <input ngModel formControlName="email" name="email" type="email" class="form-control" id="email" aria-describedby="emailHelp">
                             </div>
                             <div class="mb-3">
                                 <label for="password" class="form-label">Password</label>
-                                <input type="password" class="form-control" id="password">
+                                <input ngModel formControlName="password" name="password" type="password" class="form-control" id="password">
+                            </div>
+                            <div class="bd-magin">
+                                <button type="button" class="btn btn-primary" (click)="onLogin()">Ingresar</button>
+                                <button type="button" class="btn btn-light">Registrarse</button>
                             </div>
                         </form>
-                    </div>
-                    <div class="bd-magin">
-                        <button type="button" class="btn btn-primary">Ingresar</button>
-                        <button type="button" class="btn btn-light">Registrarse</button>
                     </div>
                 </div>
             </div>
